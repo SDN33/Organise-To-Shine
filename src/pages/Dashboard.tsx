@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import { Heart, BookOpen } from 'lucide-react';
@@ -41,7 +41,7 @@ export default function Dashboard() {
     if (error) {
       console.error('Error fetching favorites:', error);
     } else {
-      setFavorites(data.map(f => f.articles) || []);
+      setFavorites(data?.map(f => f.articles as unknown as Article).filter(Boolean) || []);
     }
   };
 
@@ -64,7 +64,7 @@ export default function Dashboard() {
   if (!user) {
     return (
       <div className="text-center">
-        Please log in to access the dashboard.
+        Veuillez vous connecter pour accéder à votre tableau de bord.
       </div>
     );
   }
@@ -74,12 +74,12 @@ export default function Dashboard() {
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex items-center gap-3 mb-6">
           <BookOpen className="w-6 h-6 text-blue-600" />
-          <h1 className="text-2xl font-bold">Your Reading List</h1>
+          <h1 className="text-2xl font-bold">Vos Articles Favoris</h1>
         </div>
 
         <div className="space-y-6">
           {favorites.length === 0 ? (
-            <p className="text-gray-500">No favorite articles yet.</p>
+            <p className="text-gray-500">Pas d'articles favoris pour le moment.</p>
           ) : (
             favorites.map((article) => (
               <div key={article.id} className="border-b pb-4 last:border-b-0 last:pb-0">
