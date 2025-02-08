@@ -62,7 +62,7 @@ export default function Navbar() {
                   to="/register"
                   className="px-3 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
                 >
-                  S&pos;inscrire
+                  S'inscrire
                 </Link>
               </>
             )}
