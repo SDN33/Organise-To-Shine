@@ -123,7 +123,7 @@ export default function Home() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-4xl font-bold text-gray-900 mb-8">Latest Articles</h1>
+      <h1 className="text-4xl font-bold text-gray-900 mb-8">Derniers Articles</h1>
       <div className="space-y-8">
         {articles.map((article) => (
           <article key={article.id} className="bg-white rounded-lg shadow-md p-6">
