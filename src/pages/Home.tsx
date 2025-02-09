@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { Clock, Heart } from 'lucide-react';
+
+import HeroBanner from '../components/HeroBanner';
 
 interface Article {
   id: string;
@@ -17,28 +19,7 @@ export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    fetchArticles();
-    if (user) {
-      fetchFavorites();
-    }
-  }, [user]);
-
-  async function fetchArticles() {
-    const { data, error } = await supabase
-      .from('articles')
-      .select('*')
-      .eq('status', 'published')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching articles:', error);
-    } else {
-      setArticles(data || []);
-    }
-  }
-
-  async function fetchFavorites() {
+  const fetchFavorites = useCallback(async () => {
     if (!user) return;
     const { data, error } = await supabase
       .from('favorites')
@@ -50,7 +31,27 @@ export default function Home() {
     } else {
       setFavorites(new Set(data.map(f => f.article_id)));
     }
-  }
+  }, [user]);
+
+  const fetchArticles = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching articles:', error);
+    } else {
+      setArticles(data);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchArticles();
+    if (user) {
+      fetchFavorites();
+    }
+  }, [user, fetchFavorites, fetchArticles]);
 
   async function toggleFavorite(articleId: string) {
     if (!user) return;
@@ -78,7 +79,10 @@ export default function Home() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-6xl mx-auto">
+      <HeroBanner />
+      <br />
+      <br />
       <h1 className="text-4xl font-bold text-gray-900 mb-8">Derniers Articles</h1>
       <div className="space-y-8">
         {articles.map((article) => (
