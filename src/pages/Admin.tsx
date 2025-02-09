@@ -87,7 +87,8 @@ export default function Admin() {
         // Continue sans image si la génération échoue
       }
 
-      const slug = customTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      const timestamp = new Date().getTime();
+      const slug = `${customTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${timestamp}`;
 
       const newArticle = {
         title: customTopic,
