@@ -268,7 +268,7 @@ export default function Admin() {
             <button
               onClick={generateDailyArticles}
               disabled={isGenerating}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isGenerating ? (
                 <div className="flex items-center justify-center">
@@ -336,7 +336,7 @@ export default function Admin() {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => startEditing(article)}
-                          className="p-1 text-blue-600 hover:text-blue-800"
+                          className="p-1 text-indigo-600 hover:text-blue-800"
                           title="Modifier"
                         >
                           <Edit className="w-4 h-4" />

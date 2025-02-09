@@ -1,66 +1,64 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, Layout, LogOut, Shield } from 'lucide-react';
+import {
+  LayoutDashboard,
+  LogOut,
+  Shield
+} from 'lucide-react';
 
 const ADMIN_EMAIL = 's.deinegri2@gmail.com';
 
 export default function Navbar() {
   const { user, signOut } = useAuth();
-
   const isAdmin = user?.email === ADMIN_EMAIL;
 
   return (
-    <nav className="bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <Link
-              to="/"
-              className="flex items-center px-2 py-2 text-gray-700 hover:text-gray-900"
-            >
-              <Home className="h-6 w-6" />
-              <span className="ml-2 font-medium">Organise To Shine</span>
-            </Link>
-          </div>
+    <div className="relative">
+      {/* Purple curved background */}
+      <div className="absolute inset-x-0 top-0 h-20 bg-indigo-600 rounded-b-[50px] mb-10" />
 
-          <div className="flex items-center space-x-4">
+      {/* Navbar content */}
+      <nav className="relative z-10 max-w-7xl mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-white text-xl font-semibold">
+            Organise To Shine
+          </Link>
+
+          <div className="flex items-center space-x-6">
             {user ? (
               <>
-                <Link
-                  to="/dashboard"
-                  className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
-                >
-                  <Layout className="h-4 w-4 mr-2" />
-                  Mon Espace
-                </Link>
+                <NavLink to="/dashboard" icon={<LayoutDashboard />} text="Dashboard" />
+
+
                 {isAdmin && (
-                  <Link
+                  <NavLink
                     to="/admin"
-                    className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-purple-600 hover:text-purple-800 hover:bg-purple-50"
-                  >
-                    <Shield className="h-4 w-4 mr-2" />
-                    Admin
-                  </Link>
+                    icon={<Shield className="h-5 w-5" />}
+                    text="Admin"
+                    className="text-yellow-300 hover:text-yellow-100"
+                  />
                 )}
+
                 <button
                   onClick={() => signOut()}
-                  className="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                  className="flex items-center text-white hover:text-gray-200 transition-colors"
                 >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Déconnection
+                  <LogOut className="h-5 w-5" />
+                  <span className="ml-2 text-sm">Déconnexion</span>
                 </button>
               </>
             ) : (
               <>
                 <Link
                   to="/login"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                  className="text-white hover:text-gray-200 transition-colors"
                 >
                   Se Connecter
                 </Link>
                 <Link
                   to="/register"
-                  className="px-3 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+                  className="px-4 py-2 rounded-md bg-white text-indigo-600 hover:bg-gray-100 transition-colors"
                 >
                   S'inscrire
                 </Link>
@@ -68,7 +66,22 @@ export default function Navbar() {
             )}
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 }
+
+// Helper component for nav links
+interface NavLinkProps {
+  to: string;
+  icon: React.ReactElement;
+  text: string;
+  className?: string;
+}
+
+const NavLink = ({ to, icon, text, className = "text-white hover:text-gray-200" }: NavLinkProps) => (
+  <Link to={to} className={`flex flex-col items-center ${className} transition-colors`}>
+    {React.cloneElement(icon, { className: "h-5 w-5" })}
+    <span className="mt-1 text-xs">{text}</span>
+  </Link>
+);

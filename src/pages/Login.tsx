@@ -15,16 +15,16 @@ export default function Login() {
     try {
       await signIn(email, password);
       navigate('/dashboard');
-    } catch (error) {
-      setError('Failed to sign in');
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Failed to sign in');
     }
   };
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold mb-6">Login</h1>
-        
+      <div className="bg-white rounded-lg shadow-md p-6 pt-40">
+        <h1 className="text-2xl font-bold mb-6">Se Connecter</h1>
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
@@ -48,7 +48,7 @@ export default function Login() {
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
+              Mot de Passe
             </label>
             <input
               type="password"
@@ -62,10 +62,10 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <LogIn className="-ml-1 mr-2 h-4 w-4" />
-            Sign In
+            Se Connecter
           </button>
         </form>
       </div>
