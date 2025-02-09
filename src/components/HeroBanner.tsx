@@ -9,6 +9,7 @@ interface Slide {
   image: string;
   color: string;
   slug: string;
+
 }
 
 const HeroSlider = () => {
@@ -74,7 +75,7 @@ const HeroSlider = () => {
   }, [slides.length, nextSlide]);
 
   return (
-    <div className="relative h-[40rem] w-full overflow-hidden">
+    <div className="relative h-[25rem] w-full overflow-hidden">
       <div className="relative h-full w-full">
         {slides.map((slide, index) => (
           <div

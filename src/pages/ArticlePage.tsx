@@ -10,6 +10,7 @@ interface Article {
   content: string;
   created_at: string;
   slug: string;
+  image_url: string;
 }
 
 interface Comment {
@@ -148,22 +149,38 @@ export default function ArticlePage() {
           <h1 className="text-4xl font-bold text-gray-900">
             {article.title}
           </h1>
-          {user && (
             <button
-              onClick={toggleFavorite}
-              className={`p-2 rounded-full hover:bg-gray-100 ${
-                isFavorited ? 'text-red-500' : 'text-gray-400'
-              }`}
+            onClick={user ? toggleFavorite : () => navigate('/login')}
+            className={`p-2 rounded-full hover:bg-gray-100 group relative ${
+              isFavorited ? 'text-red-500' : 'text-gray-400'
+            }`}
             >
-              <Heart className="w-6 h-6" fill={isFavorited ? 'currentColor' : 'none'} />
+            <Heart className="w-6 h-6" fill={isFavorited ? 'currentColor' : 'none'} />
+            {!user && (
+              <div className="hidden group-hover:block absolute -bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded whitespace-nowrap">
+              Se connecter pour ajouter aux favoris
+              </div>
+            )}
             </button>
-          )}
+
         </div>
 
         <div className="flex items-center text-gray-500 text-sm mb-6">
           <Clock className="w-4 h-4 mr-1" />
-          <time>{new Date(article.created_at).toLocaleDateString()}</time>
+          <time>
+            {new Date(article.created_at).toLocaleDateString()} à {new Date(article.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </time>
         </div>
+
+        {article.image_url && (
+          <div className="mb-8">
+            <img
+              src={article.image_url}
+              alt={article.title}
+              className="w-full h-96 object-cover rounded-lg shadow-md"
+            />
+          </div>
+        )}
 
         <div className="prose max-w-none mb-8">
           {article.content.split('\n').map((paragraph, index) => (
@@ -208,15 +225,15 @@ export default function ArticlePage() {
 
             {!user && (
               <div className="text-center">
-              <p className="text-gray-600 mb-2">
-                Connectez-vous pour laisser un commentaire
-              </p>
-              <button
-                onClick={() => navigate('/login')}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Se connecter
-              </button>
+                <p className="text-gray-600 mb-2">
+                  Connectez-vous pour laisser un commentaire
+                </p>
+                <button
+                  onClick={() => navigate('/login')}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  Se connecter
+                </button>
               </div>
             )}
           </div>
