@@ -63,3 +63,28 @@ Format: Markdown avec sauts de ligne entre les paragraphes.`
     throw new Error(`Erreur lors de la génération de l'article: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
   }
 };
+
+export const generateImage = async (prompt: string): Promise<string | null> => {
+  if (!openai) {
+    throw new Error('OpenAI API key is not configured. Please add VITE_OPENAI_API_KEY to your environment variables.');
+  }
+
+  try {
+    const response = await openai.images.generate({
+      prompt: `${prompt} - style professionnel, haute qualité, image de blog`,
+      n: 1,
+      size: '1024x1024',
+      quality: 'standard',
+      style: 'natural'
+    });
+
+    if (!response.data || response.data.length === 0) {
+      throw new Error('Aucune image n\'a été générée');
+    }
+
+    return response.data[0].url ?? null;
+  } catch (error) {
+    console.error('Error generating image:', error);
+    throw new Error(`Erreur lors de la génération de l'image: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
+  }
+};
