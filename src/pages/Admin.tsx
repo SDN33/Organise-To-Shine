@@ -8,6 +8,25 @@ import { Settings, Clock, Edit, Trash2, Check, X, Loader2 } from 'lucide-react';
 
 const ADMIN_EMAIL = 's.deinegri2@gmail.com';
 
+async function saveImageToSupabase(imageUrl: string, articleId: string): Promise<string> {
+  const response = await fetch(imageUrl);
+  const blob = await response.blob();
+  const fileExt = 'png';
+  const filePath = `${articleId}/${Date.now()}.${fileExt}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('articles')
+    .upload(filePath, blob);
+
+  if (uploadError) throw uploadError;
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('articles')
+    .getPublicUrl(filePath);
+
+  return publicUrl;
+}
+
 interface Article {
   id: string;
   title: string;
@@ -81,9 +100,36 @@ export default function Admin() {
       let imageUrl = null;
 
       try {
-        imageUrl = await generateImage(customTopic);
+        const tempImageUrl = await generateImage(customTopic);
+        // Créer d'abord l'article pour avoir son ID
+        const { data: articleData, error: articleError } = await supabase
+          .from('articles')
+          .insert([{
+        title: customTopic,
+        content,
+        user_id: user?.id,
+        slug: `${customTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}`,
+        status: 'published'
+          }])
+          .select()
+          .single();
+
+        if (articleError) throw articleError;
+
+        // Sauvegarder l'image dans Supabase et obtenir l'URL permanente
+        if (tempImageUrl) {
+          imageUrl = await saveImageToSupabase(tempImageUrl, articleData.id);
+        }
+
+        // Mettre à jour l'article avec l'URL permanente
+        const { error: updateError } = await supabase
+          .from('articles')
+          .update({ image_url: imageUrl })
+          .eq('id', articleData.id);
+
+        if (updateError) throw updateError;
       } catch (imageError) {
-        console.error('Erreur lors de la génération de l\'image:', imageError);
+        console.error('Erreur lors de la gestion de l\'image:', imageError);
         // Continue sans image si la génération échoue
       }
 
@@ -225,11 +271,18 @@ export default function Admin() {
   };
 
   const deleteArticle = async (id: string) => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer cet article ? Tous les commentaires associés seront également supprimés.')) {
+    if (window.confirm('Êtes-vous sûr de vouloir supprimer cet article ? Tous les commentaires et favoris associés seront également supprimés.')) {
       setError(null);
       setDeletingIds(prev => [...prev, id]);
 
       try {
+        const { error: favoritesError } = await supabase
+          .from('favorites')
+          .delete()
+          .eq('article_id', id);
+
+        if (favoritesError) throw favoritesError;
+
         const { error: commentsError } = await supabase
           .from('comments')
           .delete()
