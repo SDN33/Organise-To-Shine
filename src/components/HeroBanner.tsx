@@ -6,7 +6,6 @@ interface Slide {
   id: string;
   title: string;
   subtitle: string;
-  image: string;
   color: string;
   slug: string;
 
@@ -19,7 +18,6 @@ const HeroSlider = () => {
       id: '0',
       title: 'Chargement...',
       subtitle: 'Veuillez patienter',
-      image: '/api/placeholder/1920/1080',
       color: 'from-indigo-500',
       slug: '',
     },
@@ -45,14 +43,13 @@ const HeroSlider = () => {
           title: article.title,
           slug: article.slug,
           subtitle: 'Nos derniers articles',
-          image:
-            'https://res.cloudinary.com/daroyxenr/image/upload/q_auto:best/v1739102257/Designer_9_j5mysd.avif',
           color:
             index === 0
-              ? 'from-indigo-500'
+              ? 'from-indigo-500 to-purple-500'
               : index === 1
-              ? 'from-blue-500'
-              : 'from-purple-500',
+              ? 'from-blue-500 to-indigo-500'
+              : 'from-purple-500 to-blue-500',
+          href: `/articles/${article.slug}`,
         }));
         setSlides(formattedSlides);
       }
@@ -87,11 +84,6 @@ const HeroSlider = () => {
             <div className="absolute inset-0">
               <div
                 className={`absolute inset-0 bg-gradient-to-r ${slide.color} to-transparent opacity-60 z-10`}
-              />
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="h-full w-full object-cover"
               />
             </div>
 
