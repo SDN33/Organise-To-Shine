@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { Clock, Heart, ArrowLeft, MessageCircle } from 'lucide-react';
+import ShareButton from '../components/ShareButton';
 
 interface Article {
   id: string;
@@ -245,6 +246,12 @@ export default function ArticlePage() {
                 </button>
               </div>
             )}
+
+            <br /><br />
+            <ShareButton
+              url={`${window.location.origin}/article/${article.slug}`}
+              title={article.title}
+            />
           </div>
         </div>
       </article>

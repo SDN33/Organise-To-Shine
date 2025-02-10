@@ -120,10 +120,6 @@ export default function Home() {
             />
               </button>
             )}
-            <ShareButton
-              url={`${window.location.origin}/article/${article.slug}`}
-              title={article.title}
-            />
           </div>
             </div>
             <div className="flex items-center text-gray-500 text-sm mb-4">
@@ -150,6 +146,11 @@ export default function Home() {
             >
           Lire la suite →
             </Link>
+            <br /><br />
+            <ShareButton
+              url={`${window.location.origin}/article/${article.slug}`}
+              title={article.title}
+            />
           </div>
         </div>
           </article>
