@@ -43,7 +43,7 @@ L'article doit être informatif, engageant et utile pour le lecteur.`
           content: `Rédigez un article approfondi et structuré sur le sujet suivant: ${topic}
 
 Veuillez inclure:
-1. Un titre accrocheur
+1. Un titre accrocheur et optimisé pour le SEO
 2. Une introduction captivante
 3. 3-4 sections principales avec sous-titres
 4. Des exemples concrets

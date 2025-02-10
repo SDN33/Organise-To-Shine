@@ -20,6 +20,7 @@ export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
+
   const fetchFavorites = useCallback(async () => {
     if (!user) return;
     const { data, error } = await supabase
@@ -129,9 +130,16 @@ export default function Home() {
                     </time>
                 </div>
                 <div className="prose max-w-none mb-4">
-                  <p className="text-gray-700 mb-2">
-                    {getExcerpt(article.content)}
-                  </p>
+                    <p className="text-gray-700 mb-2">
+                    {getExcerpt(article.content).split('\n').map((line, index) => {
+                      if (line.startsWith('# ')) {
+                      return <strong key={index}>{line.substring(2).toUpperCase()} </strong>;
+                      } else if (line.startsWith('## ')) {
+                      return <strong key={index}>{line.substring(3)} </strong>;
+                      }
+                      return line + ' ';
+                    })}
+                    </p>
                 </div>
                 <Link
                   to={`/article/${article.slug}`}

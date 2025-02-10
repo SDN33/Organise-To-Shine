@@ -183,17 +183,26 @@ export default function ArticlePage() {
         )}
 
         <div className="prose max-w-none mb-8">
-          {article.content.split('\n').map((paragraph, index) => (
-            <p key={index} className="text-gray-700 mb-4">
-              {paragraph}
-            </p>
-          ))}
+          {article.content.split('\n').map((line, index) => {
+            if (line.startsWith('# ')) {
+              return <strong key={index} className="text-gray-700 mb-4 block text-2xl">{line.substring(2).toUpperCase()}</strong>;
+            } else if (line.startsWith('## ')) {
+              return <strong key={index} className="text-gray-700 mb-4 block text-xl">{line.substring(3)}</strong>;
+            }
+            return (
+              <p key={index} className="text-gray-700 mb-4">
+          {line.split('**').map((part, i) =>
+            i % 2 === 0 ? part : <em key={i}>{part}</em>
+          )}
+              </p>
+            );
+          })}
         </div>
 
         <div className="border-t pt-8">
           <div className="flex items-center mb-6">
             <MessageCircle className="w-5 h-5 mr-2" />
-            <h2 className="text-xl font-semibold">Commentaires</h2>
+            <h2 className="text-xl font-semibold">Commentaires ({comments.length})</h2>
           </div>
 
           <div className="space-y-6">
