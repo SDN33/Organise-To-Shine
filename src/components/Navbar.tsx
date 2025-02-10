@@ -23,7 +23,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center">
               <img
-              src="https://res.cloudinary.com/daroyxenr/image/upload/v1739149891/07a8a9c192544fe28acd5ee09fc6c6ca-free-removebg-preview_ulqtxh.png"
+              src="https://res.cloudinary.com/daroyxenr/image/upload/v1739149742/07a8a9c192544fe28acd5ee09fc6c6ca-free_rwcrr6.png"
               alt="DataBuzz Logo"
               className="h-20 -mt-4 w-auto"
               />
