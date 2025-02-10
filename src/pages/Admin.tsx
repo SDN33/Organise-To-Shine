@@ -9,22 +9,54 @@ import { Settings, Clock, Edit, Trash2, Check, X, Loader2 } from 'lucide-react';
 const ADMIN_EMAIL = 's.deinegri2@gmail.com';
 
 async function saveImageToSupabase(imageUrl: string, articleId: string): Promise<string> {
-  const response = await fetch(imageUrl);
-  const blob = await response.blob();
-  const fileExt = 'png';
-  const filePath = `${articleId}/${Date.now()}.${fileExt}`;
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) throw new Error('Failed to fetch image');
 
-  const { error: uploadError } = await supabase.storage
-    .from('articles')
-    .upload(filePath, blob);
+    const blob = await response.blob();
+    const fileExt = 'png';
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `articles/${articleId}/${fileName}`;
 
-  if (uploadError) throw uploadError;
+    // Delete any existing images for this article
+    const { data: existingFiles } = await supabase.storage
+      .from('articles')
+      .list(`articles/${articleId}`);
 
-  const { data: { publicUrl } } = supabase.storage
-    .from('articles')
-    .getPublicUrl(filePath);
+    if (existingFiles?.length) {
+      await Promise.all(
+        existingFiles.map(file =>
+          supabase.storage
+            .from('articles')
+            .remove([`articles/${articleId}/${file.name}`])
+        )
+      );
+    }
 
-  return publicUrl;
+    // Upload new image
+    const { error: uploadError } = await supabase.storage
+      .from('articles')
+      .upload(filePath, blob, {
+        cacheControl: '3600',
+        upsert: false,
+        contentType: 'image/png'
+      });
+
+    if (uploadError) throw uploadError;
+
+    // Get public URL with cache busting
+    const { data: { publicUrl } } = supabase.storage
+      .from('articles')
+      .getPublicUrl(filePath);
+
+    // Add timestamp to URL to prevent caching
+    const urlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
+
+    return urlWithCacheBust;
+  } catch (error) {
+    console.error('Error saving image:', error);
+    throw error;
+  }
 }
 
 interface Article {
@@ -97,69 +129,48 @@ export default function Admin() {
 
     try {
       const content = await generateArticle(customTopic);
-      let imageUrl = null;
 
+      // Créer d'abord l'article pour avoir son ID
+      const { data: articleData, error: articleError } = await supabase
+        .from('articles')
+        .insert([{
+          title: customTopic,
+          content,
+          user_id: user?.id,
+          slug: `${customTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}`,
+          status: 'published'
+        }])
+        .select()
+        .single();
+
+      if (articleError) throw articleError;
+
+      // Générer et sauvegarder l'image après la création de l'article
       try {
         const tempImageUrl = await generateImage(customTopic);
-        // Créer d'abord l'article pour avoir son ID
-        const { data: articleData, error: articleError } = await supabase
-          .from('articles')
-          .insert([{
-        title: customTopic,
-        content,
-        user_id: user?.id,
-        slug: `${customTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}`,
-        status: 'published'
-          }])
-          .select()
-          .single();
-
-        if (articleError) throw articleError;
-
-        // Sauvegarder l'image dans Supabase et obtenir l'URL permanente
         if (tempImageUrl) {
-          imageUrl = await saveImageToSupabase(tempImageUrl, articleData.id);
+          const permanentImageUrl = await saveImageToSupabase(tempImageUrl, articleData.id);
+
+          // Mettre à jour l'article avec l'URL permanente
+          const { error: updateError } = await supabase
+            .from('articles')
+            .update({
+              image_url: permanentImageUrl,
+              updated_at: new Date().toISOString() // Ajouter un timestamp de mise à jour
+            })
+            .eq('id', articleData.id);
+
+          if (updateError) throw updateError;
+          setGeneratedImageUrl(permanentImageUrl);
         }
-
-        // Mettre à jour l'article avec l'URL permanente
-        const { error: updateError } = await supabase
-          .from('articles')
-          .update({ image_url: imageUrl })
-          .eq('id', articleData.id);
-
-        if (updateError) throw updateError;
       } catch (imageError) {
         console.error('Erreur lors de la gestion de l\'image:', imageError);
         // Continue sans image si la génération échoue
       }
 
-      const timestamp = new Date().getTime();
-      const slug = `${customTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${timestamp}`;
-
-      const newArticle = {
-        title: customTopic,
-        content,
-        image_url: imageUrl, // Peut être null si la génération a échoué
-        user_id: user?.id,
-        slug,
-        status: 'published'
-      };
-
-      const { error: insertError } = await supabase
-        .from('articles')
-        .insert([newArticle]);
-
-      if (insertError) throw insertError;
-
-      await supabase.from('auto_generation_log').insert({
-        generated_at: new Date().toISOString(),
-        articles_count: 1
-      });
-
       await fetchArticles();
       await checkLastGeneration();
       setCustomTopic('');
-      setGeneratedImageUrl(imageUrl);
     } catch (err) {
       setError(`Erreur lors de la génération de l'article: ${(err as Error).message}`);
     } finally {
@@ -168,18 +179,18 @@ export default function Admin() {
   };
 
   const generateDailyArticles = async () => {
-    const topics = [
-      'Dernières tendances technologiques en 2025',
-      'L\'avenir du marketing digital',
-      'Pratiques commerciales durables',
-      'Innovation en IA et apprentissage automatique',
-      'Meilleures pratiques du travail à distance',
-      'Stratégies de transformation digitale',
-      'Startups technologiques émergentes',
-      'Meilleures pratiques en cybersécurité',
-      'Tendances marketing des réseaux sociaux',
-      'Leadership d\'entreprise à l\'ère numérique'
-    ];
+  const topics = [
+    'Dernières tendances technologiques en 2025',
+    'L\'avenir du marketing digital',
+    'Pratiques commerciales durables',
+    'Innovation en IA et apprentissage automatique',
+    'Meilleures pratiques du travail à distance',
+    'Stratégies de transformation digitale',
+    'Startups technologiques émergentes',
+    'Meilleures pratiques en cybersécurité',
+    'Tendances marketing des réseaux sociaux',
+    'Leadership d\'entreprise à l\'ère numérique'
+  ];
 
     setIsGenerating(true);
     setError(null);
@@ -198,7 +209,7 @@ export default function Admin() {
           // Continue sans image si la génération échoue
         }
 
-        const slug = topic.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const slug = `${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}`;
 
         const newArticle = {
           title: topic,

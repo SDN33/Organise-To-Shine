@@ -21,14 +21,15 @@ export default function Navbar() {
       {/* Navbar content */}
       <nav className="relative z-10 max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-            <Link to="/" className="text-white text-xl font-semibold hidden md:block">
-            DataBuzz : L'info digitale qui fait vibrer votre quotidien !
-            </Link>
-            <Link to="/" className="text-white text-xl font-semibold md:hidden">
-            DataBuzz
+            <Link to="/" className="flex items-center">
+              <img
+              src="https://res.cloudinary.com/daroyxenr/image/upload/v1739149891/07a8a9c192544fe28acd5ee09fc6c6ca-free-removebg-preview_ulqtxh.png"
+              alt="DataBuzz Logo"
+              className="h-20 -mt-4 w-auto"
+              />
             </Link>
 
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-6 -mt-4">
             {user ? (
               <>
                 <NavLink to="/dashboard" icon={<LayoutDashboard />} text="Dashboard" />

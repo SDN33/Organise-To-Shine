@@ -23,17 +23,17 @@ export const Footer: React.FC<Props> = () => {
             <div className="mb-6">
               <a href="#" className="inline-block">
                 <img
-                  src="https://i.ibb.co/QDy827D/ak-logo.png"
-                  className="h-12 w-auto mx-auto md:mx-0"
+                  src="https://res.cloudinary.com/daroyxenr/image/upload/v1739149742/07a8a9c192544fe28acd5ee09fc6c6ca-free_rwcrr6.png"
+                  className="h-40 w-auto mx-auto md:mx-0"
                   alt="logo"
                 />
               </a>
             </div>
-            <p className="text-gray-400 mb-6">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.
+            <p className="text-white text-lg mb-6">
+              L'info digitale qui fait vibrer votre quotidien !
             </p>
             <div>
-              <span className="block text-lg font-semibold mb-4">Follow us</span>
+              <span className="block text-lg font-semibold mb-4"> Suivez-nous:</span>
               <div className="flex space-x-4 justify-center md:justify-start">
                 <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fab fa-facebook-f text-xl"></i></a>
                 <a href="#" className="text-blue-400 hover:text-blue-300"><i className="fab fa-twitter text-xl"></i></a>
