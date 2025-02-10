@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { Clock, Heart } from 'lucide-react';
+import ShareButton from '../components/ShareButton';
 
-import HeroBanner from '../components/HeroBanner';
 
 interface Article {
   id: string;
@@ -82,76 +82,79 @@ export default function Home() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6">
-      <HeroBanner />
       <br />
       <br />
-      <h1 className="text-4xl font-bold text-gray-900 mb-8 px-2">Derniers Articles</h1>
-      <div className="space-y-8">
+      <h1 className="text-4xl font-bold text-gray-900 mb-8 px-2">Derniers Articles Tendances</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {articles.map((article) => (
           <article key={article.id} className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:gap-6">
-              {article.image_url && (
-                <div className="w-full sm:w-48 mb-4 sm:mb-0">
-                  <img
-                    src={article.image_url}
-                    alt={article.title}
-                    className="w-full h-48 sm:w-48 object-cover rounded-lg"
-                  />
-                </div>
-              )}
-              <div className="flex-1">
-                <div className="flex justify-between items-start mb-4">
-                  <Link
-                    to={`/article/${article.slug}`}
-                    className="hover:text-blue-600"
-                  >
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                      {article.title}
-                    </h2>
-                  </Link>
-                  {user && (
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleFavorite(article.id);
-                      }}
-                      className={`p-2 rounded-full hover:bg-gray-100 ${
-                        favorites.has(article.id) ? 'text-red-500' : 'text-gray-400'
-                      }`}
-                    >
-                      <Heart className="w-6 h-6" fill={favorites.has(article.id) ? 'currentColor' : 'none'} />
-                    </button>
-                  )}
-                </div>
-                <div className="flex items-center text-gray-500 text-sm mb-4">
-                  <Clock className="w-4 h-4 mr-1" />
-                  <time>
-                    {new Date(article.created_at).toLocaleDateString()} à {new Date(article.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </time>
-                </div>
-                <div className="prose max-w-none mb-4">
-                  <p className="text-gray-700 mb-2 text-sm sm:text-base">
-                    {getExcerpt(article.content).split('\n').map((line, index) => {
-                      if (line.startsWith('# ')) {
-                        return <strong key={index}>{line.substring(2).toUpperCase()} </strong>;
-                      } else if (line.startsWith('## ')) {
-                        return <strong key={index}>{line.substring(3)} </strong>;
-                      }
-                      return line + ' ';
-                    })}
-                  </p>
-                </div>
-                <Link
-                  to={`/article/${article.slug}`}
-                  className="inline-block mt-4 text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  Lire la suite →
-                </Link>
-              </div>
+        <div className="flex flex-col">
+          {article.image_url && (
+            <div className="mb-4">
+          <img
+            src={article.image_url}
+            alt={article.title}
+            className="w-full h-48 object-cover rounded-lg"
+          />
             </div>
+          )}
+          <div className="flex-1">
+            <div className="flex justify-between items-start mb-4">
+          <Link to={`/article/${article.slug}`} className="hover:text-blue-600">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{article.title.length > 50 ? article.title.substring(0, 50) + '...' : article.title}</h2>
+          </Link>
+          <div className="flex gap-4 items-center">
+            {user && (
+              <button
+            onClick={(e) => {
+              e.preventDefault();
+              toggleFavorite(article.id);
+            }}
+            className={`p-2 rounded-full hover:bg-gray-100 ${
+              favorites.has(article.id) ? 'text-red-500' : 'text-gray-400'
+            }`}
+              >
+            <Heart
+              className="w-6 h-6"
+              fill={favorites.has(article.id) ? 'currentColor' : 'none'}
+            />
+              </button>
+            )}
+            <ShareButton
+              url={`${window.location.origin}/article/${article.slug}`}
+              title={article.title}
+            />
+          </div>
+            </div>
+            <div className="flex items-center text-gray-500 text-sm mb-4">
+          <Clock className="w-4 h-4 mr-1" />
+          <time>
+            {new Date(article.created_at).toLocaleDateString()} à {new Date(article.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </time>
+            </div>
+            <div className="prose max-w-none mb-4">
+          <p className="text-gray-700 mb-2 text-sm sm:text-base">
+            {getExcerpt(article.content).split('\n').map((line, index) => {
+              if (line.startsWith('# ')) {
+            return <strong key={index}>{line.substring(2).toUpperCase()} </strong>;
+              } else if (line.startsWith('## ')) {
+            return <strong key={index}>{line.substring(3)} </strong>;
+              }
+              return line + ' ';
+            })}
+          </p>
+            </div>
+            <Link
+          to={`/article/${article.slug}`}
+          className="inline-block mt-4 text-blue-600 hover:text-blue-800 font-medium"
+            >
+          Lire la suite →
+            </Link>
+          </div>
+        </div>
           </article>
         ))}
       </div>
-    </div>
-  );
-}
+        </div>
+      );
+    }
