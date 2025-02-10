@@ -1,90 +1,51 @@
 import OpenAI from 'openai';
 
-const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-
-// Create OpenAI client only if API key is available
-const openai = apiKey ? new OpenAI({
-  apiKey,
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true
-}) : null;
+});
 
-export const generateArticle = async (topic: string) => {
-  if (!openai) {
-    throw new Error('OpenAI API key is not configured. Please add VITE_OPENAI_API_KEY to your environment variables.');
-  }
+export async function generateArticle(topic: string): Promise<string> {
+  const completion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: "user",
+        content: `Écrivez un article détaillé sur ${topic}. L'article doit suivre la structure suivante:
 
-  try {
-    const completion = await openai.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content: `Vous êtes un journaliste professionnel expert dans la rédaction d'articles de blog engageants.
+# Titre principal
 
-Instructions de style:
-- Utilisez un ton professionnel mais accessible
-- Structurez clairement le contenu avec des titres et sous-titres
-- Incluez des exemples concrets et des cas d'usage
-- Citez des experts quand c'est pertinent
-- Ajoutez des statistiques et données quand possible
-- Utilisez un style dynamique et varié
-- Évitez le jargon technique excessif
+## Introduction
 
-Format requis:
-- Structure en markdown avec # pour les titres principaux et ## pour les sous-titres
-- Paragraphes séparés par des sauts de ligne
-- Points clés mis en valeur avec des listes à puces
-- Citations en italique avec >
-- Longueur: 800-1000 mots environ
+## Sous-titre 1
+[Contenu détaillé]
 
-L'article doit être informatif, engageant et utile pour le lecteur.`
-        },
-        {
-          role: "user",
-          content: `Rédigez un article approfondi et structuré sur le sujet suivant: ${topic}
+## Sous-titre 2
+[Contenu détaillé]
 
-Veuillez inclure:
-1. Un titre accrocheur et optimisé pour le SEO
-2. Une introduction captivante
-3. 3-4 sections principales avec sous-titres
-4. Des exemples concrets
-5. Une conclusion qui ouvre des perspectives
+## Sous-titre 3
+[Contenu détaillé]
 
-Format: Markdown avec sauts de ligne entre les paragraphes.`
-        }
-      ],
-      model: "gpt-3.5-turbo",
-      temperature: 0.7,
-      max_tokens: 1000,
-    });
+## Conclusion
 
-    return completion.choices[0].message.content;
-  } catch (error) {
-    console.error('Error generating article:', error);
-    throw new Error(`Erreur lors de la génération de l'article: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
-  }
-};
+L'article doit être informatif, bien structuré et captivant.`
+      }
+    ],
+    model: "gpt-3.5-turbo",
+    temperature: 0.7,
+    max_tokens: 1500,
+  });
 
-export const generateImage = async (prompt: string): Promise<string | null> => {
-  if (!openai) {
-    throw new Error('OpenAI API key is not configured. Please add VITE_OPENAI_API_KEY to your environment variables.');
-  }
+  return completion.choices[0].message.content || '';
+}
 
-  try {
-    const response = await openai.images.generate({
-      prompt: `${prompt} - style professionnel, haute qualité, image de blog`,
-      n: 1,
-      size: '1024x1024',
-      quality: 'standard',
-      style: 'natural'
-    });
+export async function generateImage(prompt: string): Promise<string> {
+  const response = await openai.images.generate({
+    prompt,
+    n: 1,
+    size: '1024x1024',
+    quality: 'standard',
+    style: 'natural'
+  });
 
-    if (!response.data || response.data.length === 0) {
-      throw new Error('Aucune image n\'a été générée');
-    }
-
-    return response.data[0].url ?? null;
-  } catch (error) {
-    console.error('Error generating image:', error);
-    throw new Error(`Erreur lors de la génération de l'image: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);
-  }
-};
+  return response.data[0].url || '';
+}

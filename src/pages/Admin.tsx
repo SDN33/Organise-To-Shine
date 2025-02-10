@@ -179,18 +179,34 @@ export default function Admin() {
   };
 
   const generateDailyArticles = async () => {
-  const topics = [
-    'Dernières tendances technologiques en 2025',
-    'L\'avenir du marketing digital',
-    'Pratiques commerciales durables',
-    'Innovation en IA et apprentissage automatique',
-    'Meilleures pratiques du travail à distance',
-    'Stratégies de transformation digitale',
-    'Startups technologiques émergentes',
-    'Meilleures pratiques en cybersécurité',
-    'Tendances marketing des réseaux sociaux',
-    'Leadership d\'entreprise à l\'ère numérique'
-  ];
+  const fetchRSSTopics = async () => {
+    try {
+      // Récupérer le flux RSS de TechCrunch et traduire les titres en français
+      const response = await fetch('https://news.google.com/rss/search?tbm=nws&q=intelligence+artificielle&oq=intelligence+artificielle&scoring=n&hl=fr&gl=FR&ceid=FR:fr');
+      const text = await response.text();
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, 'text/xml');
+      const items = xml.getElementsByTagName('item');
+
+      const topics = Array.from(items)
+        .slice(0, 10)
+        .map(item => item.getElementsByTagName('title')[0].textContent || '')
+        .filter(title => title !== '');
+
+      return topics;
+    } catch (error) {
+      console.error('Error fetching RSS feed:', error);
+      return [
+        'Actualités Tech',
+        'Innovation des Startups',
+        'Avancées en IA',
+        'Transformation Digitale',
+        'Actualités de l\'Industrie Tech'
+      ];
+    }
+  };
+
+  const topics = await fetchRSSTopics();
 
     setIsGenerating(true);
     setError(null);

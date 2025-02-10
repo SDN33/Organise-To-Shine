@@ -51,7 +51,7 @@ export const Footer: React.FC<Props> = () => {
             <form className="flex max-w-md mx-auto md:mx-0">
               <input
                 type="text"
-                placeholder="Email ..."
+                placeholder="Email"
                 className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-l focus:outline-none focus:border-blue-400"
               />
               <button className="px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-r transition-colors">
@@ -71,10 +71,9 @@ export const Footer: React.FC<Props> = () => {
             </div>
             <div>
               <ul className="flex flex-wrap justify-center space-x-4 md:space-x-6 px-4">
-                <li><a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">Home</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">Terms</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">Privacy</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">Policy</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">Accueil</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">Politique de Confidentialité</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">Mentions Légales</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">Contact</a></li>
               </ul>
             </div>

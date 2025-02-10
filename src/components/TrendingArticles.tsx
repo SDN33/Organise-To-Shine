@@ -80,7 +80,7 @@ const TrendingArticles: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6">
-      <h1 className="text-4xl font-bold text-gray-900 mb-8 px-2">Derniers Articles Tendances</h1>
+      <h2 className="text-3xl font-bold text-gray-900 mb-8 px-2">Derniers Articles Tendances</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {articles.map(article => (
           <article key={article.id} className="bg-white rounded-lg shadow-md p-4 sm:p-6">
