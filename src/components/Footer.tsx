@@ -67,7 +67,7 @@ export const Footer: React.FC<Props> = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between py-6 items-center">
             <div className="text-gray-400 text-center md:text-left mb-4 md:mb-0">
-              <p>Propulsé par <a className='text-white' href="https://stillinov.com">Still-inov Agency</a> Copyright &copy; 2025, Tous droits réservés.</p>
+              <p>Propulsé par <a className='text-white' href="https://stillinov.com">Still-inov Agency</a><br />Copyright &copy; 2025, Tous droits réservés.</p>
             </div>
             <div>
               <ul className="flex flex-wrap justify-center space-x-4 md:space-x-6 px-4">
