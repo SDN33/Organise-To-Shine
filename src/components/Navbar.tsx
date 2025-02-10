@@ -16,7 +16,7 @@ export default function Navbar() {
   return (
     <div className="relative">
       {/* Purple curved background */}
-      <div className="absolute inset-x-0 top-0 h-20 bg-indigo-600 rounded-b-[50px] mb-10" />
+      <div className="absolute inset-x-0 top-0 h-20 bg-indigo-600 mb-10" />
 
       {/* Navbar content */}
       <nav className="relative z-10 max-w-7xl mx-auto px-4 py-4">
