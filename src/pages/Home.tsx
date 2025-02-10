@@ -81,21 +81,21 @@ export default function Home() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6">
       <HeroBanner />
       <br />
       <br />
-      <h1 className="text-4xl font-bold text-gray-900 mb-8">Derniers Articles</h1>
+      <h1 className="text-4xl font-bold text-gray-900 mb-8 px-2">Derniers Articles</h1>
       <div className="space-y-8">
         {articles.map((article) => (
-          <article key={article.id} className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex gap-6">
+          <article key={article.id} className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:gap-6">
               {article.image_url && (
-                <div className="flex-shrink-0">
+                <div className="w-full sm:w-48 mb-4 sm:mb-0">
                   <img
                     src={article.image_url}
                     alt={article.title}
-                    className="w-48 h-48 object-cover rounded-lg"
+                    className="w-full h-48 sm:w-48 object-cover rounded-lg"
                   />
                 </div>
               )}
@@ -105,7 +105,7 @@ export default function Home() {
                     to={`/article/${article.slug}`}
                     className="hover:text-blue-600"
                   >
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                       {article.title}
                     </h2>
                   </Link>
@@ -125,21 +125,21 @@ export default function Home() {
                 </div>
                 <div className="flex items-center text-gray-500 text-sm mb-4">
                   <Clock className="w-4 h-4 mr-1" />
-                    <time>
+                  <time>
                     {new Date(article.created_at).toLocaleDateString()} à {new Date(article.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </time>
+                  </time>
                 </div>
                 <div className="prose max-w-none mb-4">
-                    <p className="text-gray-700 mb-2">
+                  <p className="text-gray-700 mb-2 text-sm sm:text-base">
                     {getExcerpt(article.content).split('\n').map((line, index) => {
                       if (line.startsWith('# ')) {
-                      return <strong key={index}>{line.substring(2).toUpperCase()} </strong>;
+                        return <strong key={index}>{line.substring(2).toUpperCase()} </strong>;
                       } else if (line.startsWith('## ')) {
-                      return <strong key={index}>{line.substring(3)} </strong>;
+                        return <strong key={index}>{line.substring(3)} </strong>;
                       }
                       return line + ' ';
                     })}
-                    </p>
+                  </p>
                 </div>
                 <Link
                   to={`/article/${article.slug}`}
