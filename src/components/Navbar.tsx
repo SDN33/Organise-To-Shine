@@ -21,9 +21,12 @@ export default function Navbar() {
       {/* Navbar content */}
       <nav className="relative z-10 max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-white text-xl font-semibold">
-            Organise To Shine
-          </Link>
+            <Link to="/" className="text-white text-xl font-semibold hidden md:block">
+            DataBuzz : L'info digitale qui fait vibrer votre quotidien !
+            </Link>
+            <Link to="/" className="text-white text-xl font-semibold md:hidden">
+            DataBuzz
+            </Link>
 
           <div className="flex items-center space-x-6">
             {user ? (

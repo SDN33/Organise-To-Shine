@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import { AuthProvider } from './context/AuthContext';
 import ArticlePage from './pages/ArticlePage';
+import { Footer } from './components/Footer';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
               <Route path="/article/:slug" element={<ArticlePage />} />
             </Routes>
           </main>
+          <Footer />
         </div>
       </BrowserRouter>
     </AuthProvider>
