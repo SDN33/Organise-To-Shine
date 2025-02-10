@@ -27,6 +27,7 @@ export default function Navbar() {
               alt="DataBuzz Logo"
               className="h-20 -mt-4 w-auto"
               />
+              <span className='text-white px-5 -mt-4 font-semibold'>L'info digitale qui fait vibrer votre quotidien !</span>
             </Link>
 
           <div className="flex items-center space-x-6 -mt-4">
